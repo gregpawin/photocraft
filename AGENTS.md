@@ -149,3 +149,10 @@ If the field has a PSD equivalent, map it in `crates/io` too, and keep unknown P
   GitHub profiles). Never hand-edit `contributors.json`.
 - Maintainers refresh the stats with `python3 ../../craftrules/scripts/contributors.py .` (it also
   re-verifies who wrote each `people.toml` entry; `--check` only verifies).
+
+## Cursor Cloud specific instructions
+
+- Rust must be 1.95+ (`rust-version` in the workspace `Cargo.toml`, edition 2024). The universal Cloud Agent image ships an older toolchain; `rustup toolchain install stable` and `rustup default stable` are required before `cargo` will build.
+- Linux windowing packages are listed in `docs/development.md`. This VM has no `/dev/dri`. Install `mesa-vulkan-drivers` as well so wgpu can use lavapipe (llvmpipe). The offscreen UI example and the desktop app then start with `--safe-gpu` (CPU canvas, software Vulkan for the window).
+- A headless product check that does not need a display: `cargo test -p photocraft-cli --locked --features heif`, then `photocraft-cli run --new '{"width":640,"height":400}' --cmd edit.fill --params '{"color":"#1a3a6b"}' --out out.png`. UI render without a window: `cargo run -p photocraft-ui-egui --example snapshot -- --safe-gpu --out ui.png`.
+- `CRAFT_FONTS_DIR` is optional. Japanese font tests skip when it is unset. Do not clone private `craftrules` for a normal build.
